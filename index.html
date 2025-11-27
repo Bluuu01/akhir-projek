@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kita Holo Consulting | Code Audit & Optimization</title>
+    <link
+      rel="shortcut icon"
+      href="/assets/Arlecchino _ Genshin Impact.jpeg"
+      type="image/x-icon"
+      style="width: 64px; height: 64px; border-radius: 50%"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+      /* --- ANIMASI SCROLL REVEAL --- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+      }
+
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Delays */
+      .service-card.reveal:nth-child(1),
+      .testi-card.reveal:nth-child(1) {
+        transition-delay: 0.1s;
+      }
+      .service-card.reveal:nth-child(2),
+      .testi-card.reveal:nth-child(2) {
+        transition-delay: 0.2s;
+      }
+      .service-card.reveal:nth-child(3),
+      .testi-card.reveal:nth-child(3) {
+        transition-delay: 0.3s;
+      }
+
+      /* --- CORE VARIABLES & RESET --- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #0f172a; /* Lebih gelap, corporate tech look */
+        --secondary: #1e293b;
+        --accent: #38bdf8; /* Biru muda tech */
+        --accent-light: #7dd3fc;
+        --accent-dark: #0284c7;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --border: #334155;
+        --gradient-primary: rgba(15, 23, 42, 0.95);
+        --gradient-secondary: rgba(30, 41, 59, 0.9);
+        --nav-bg: rgba(15, 23, 42, 0.9);
+      }
+
+      /* Light Theme Override */
+      body.light-theme {
+        --primary: #ffffff;
+        --secondary: #f1f5f9;
+        --accent: #0284c7;
+        --accent-light: #38bdf8;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --border: #e2e8f0;
+        --gradient-primary: rgba(255, 255, 255, 0.95);
+        --gradient-secondary: rgba(241, 245, 249, 0.9);
+        --nav-bg: rgba(255, 255, 255, 0.9);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--primary);
+        color: var(--text-primary);
+        overflow-x: hidden;
+        transition: background-color 0.4s ease, color 0.4s ease;
+      }
+
+      /* --- NAVIGATION --- */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        padding: 1.2rem 0;
+        z-index: 1000;
+        border-bottom: 1px solid var(--border);
+      }
+      nav .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2.5rem;
+        align-items: center;
+      }
+      nav a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        position: relative;
+      }
+      nav a:hover,
+      nav a.active {
+        color: var(--accent);
+      }
+      nav a.active::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--accent);
+      }
+
+      .theme-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+      }
+      .theme-btn .fa-sun {
+        display: none;
+      }
+      body.light-theme .theme-btn .fa-sun {
+        display: inline-block;
+      }
+      body.light-theme .theme-btn .fa-moon {
+        display: none;
+      }
+
+      /* --- HERO SECTION --- */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 0 2rem;
+      }
+      .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle at 20% 50%,
+          rgba(56, 189, 248, 0.1) 0%,
+          transparent 60%
+        );
+      }
+      .hero-content {
+        max-width: 1400px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        z-index: 1;
+      }
+      .hero-text h1 {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+      }
+      .hero-text .highlight {
+        color: var(--accent);
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .hero-text p {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+      }
+      .btn {
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+      }
+      .btn-secondary {
+        border: 2px solid var(--border);
+        color: var(--text-primary);
+        background: transparent;
+      }
+      .btn-secondary:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .profile-img {
+        width: 350px;
+        height: 350px;
+        border-radius: 20px;
+        /* Ganti dengan nama file gambar profil utama Anda */
+        background-image: url("/assets/holo.jpeg");
+        background-size: cover;
+        background-position: center;
+        box-shadow: 20px 20px 0px var(--border);
+        transition: transform 0.3s;
+      }
+      .profile-img:hover {
+        transform: translate(-10px, -10px);
+        box-shadow: 30px 30px 0px var(--accent);
+      }
+
+      /* --- SECTIONS GENERAL --- */
+      section {
+        padding: 6rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+      .section-tag {
+        color: var(--accent);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+      }
+      .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+      .section-subtitle {
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      /* --- SERVICES (Formerly Skills) --- */
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      .service-card {
+        background: var(--secondary);
+        padding: 2.5rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
+      .service-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      }
+      .service-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(56, 189, 248, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+      .service-icon i {
+        font-size: 1.8rem;
+        color: var(--accent);
+      }
+      .service-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+      .service-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      /* --- TESTIMONIALS --- */
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      .testi-card {
+        background: var(--secondary);
+        padding: 2rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .testi-header {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+      .testi-avatar {
+        width: 50px;
+        height: 50px;
+        background: var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+      }
+      .testi-info h4 {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+      }
+      .testi-info span {
+        font-size: 0.85rem;
+        color: var(--accent);
+      }
+      .testi-body p {
+        color: var(--text-secondary);
+        font-style: italic;
+        line-height: 1.6;
+      }
+      .stars {
+        color: #fbbf24;
+        font-size: 0.9rem;
+      }
+
+      /* --- PRICING SECTION --- */
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .pricing-card {
+        background: var(--secondary);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- CLIENTS MARQUEE STYLE --- */
+      .marquee-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        -webkit-mask-image: linear-gradient(
+          90deg,
+          transparent,
+          #000 10%,
+          #000 90%,
+          transparent
+        );
+        mask-image: linear-gradient(
+          90deg,
+          transparent,
+          #000 10%,
+          #000 90%,
+          transparent
+        );
+      }
+
+      .marquee-track {
+        display: flex;
+        width: max-content;
+        gap: 2rem;
+      }
+
+      .logo-group {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .client-card {
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        min-width: 180px;
+        justify-content: center;
+        transition: transform 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .client-card i {
+        font-size: 1.5rem;
+        color: #334155;
+      }
+
+      .client-card span {
+        font-weight: 600;
+        color: #0f172a;
+        font-size: 1.1rem;
+      }
+
+      .client-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 15px rgba(56, 189, 248, 0.1);
+      }
+
+      .client-card:hover i,
+      .client-card:hover span {
+        color: var(--accent);
+      }
+
+      body:not(.light-theme) .client-card {
+        background: var(--secondary);
+        border-color: var(--border);
+      }
+      body:not(.light-theme) .client-card span {
+        color: var(--text-primary);
+      }
+      body:not(.light-theme) .client-card i {
+        color: var(--text-secondary);
+      }
+
+      /* --- ANIMASI MARQUEE --- */
+      .scroll-left {
+        animation: scrollLeft 30s linear infinite;
+      }
+      .scroll-right {
+        animation: scrollRight 30s linear infinite;
+      }
+
+      @keyframes scrollLeft {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+
+      @keyframes scrollRight {
+        0% { transform: translateX(-50%); }
+        100% { transform: translateX(0); }
+      }
+
+      .marquee-track:hover {
+        animation-play-state: paused;
+      }
+
+      .pricing-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--accent);
+      }
+
+      .pricing-card.popular {
+        background: linear-gradient(
+          145deg,
+          var(--secondary),
+          rgba(56, 189, 248, 0.1)
+        );
+        border: 2px solid var(--accent);
+        transform: scale(1.05);
+        z-index: 10;
+        box-shadow: 0 20px 50px rgba(56, 189, 248, 0.15);
+      }
+
+      .pricing-card.popular:hover {
+        transform: scale(1.05) translateY(-10px);
+      }
+
+      .badge-popular {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--accent);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .price-header h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .price-amount {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+      }
+
+      .price-period {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        display: block;
+      }
+
+      .features-list {
+        list-style: none;
+        margin-bottom: 2.5rem;
+        text-align: left;
+        flex-grow: 1;
+      }
+
+      .features-list li {
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 0.95rem;
+      }
+
+      .features-list li i {
+        color: var(--accent);
+        margin-top: 4px;
+      }
+
+      .features-list li.disabled {
+        opacity: 0.5;
+        text-decoration: line-through;
+      }
+
+      /* --- PORTFOLIO (CONSULTANTS) --- */
+      .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+      }
+      .portfolio-card {
+        background: transparent;
+        perspective: 1000px;
+        height: 500px;
+        cursor: default;
+      }
+      .portfolio-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transform-style: preserve-3d;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .portfolio-card:hover .portfolio-card-inner {
+        transform: rotateY(5deg);
+      }
+      .portfolio-card.is-flipped .portfolio-card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .portfolio-card-front,
+      .portfolio-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: var(--secondary);
+      }
+
+      .p-card-header {
+        height: 120px;
+        background: linear-gradient(135deg, var(--border), var(--secondary));
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+      }
+      .p-card-header img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 4px solid var(--secondary);
+        transform: translateY(40%);
+        object-fit: cover;
+        background-color: var(--primary);
+      }
+      .p-card-body {
+        padding: 50px 1.5rem 1rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: calc(100% - 120px);
+      }
+      .p-card-body h3 {
+        margin-bottom: 0.2rem;
+      }
+      .p-card-body .role {
+        color: var(--accent);
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+      }
+      .p-about-text {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin-bottom: auto;
+      }
+
+      .portfolio-card-back {
+        transform: rotateY(180deg);
+        background: var(--primary);
+        display: flex;
+        flex-direction: column;
+      }
+      .back-content {
+        padding: 2rem;
+        text-align: left;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .back-content h3 {
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+      }
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+      .stat-value {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .flip-trigger,
+      .flip-back-btn {
+        cursor: pointer;
+        color: var(--accent);
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        display: block;
+      }
+
+      /* --- CONTACT FORM --- */
+      .contact-container {
+        background: var(--secondary);
+        padding: 4rem;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-secondary);
+      }
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        background: var(--primary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem;
+        color: var(--text-primary);
+        font-family: "Inter", sans-serif;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      /* --- FOOTER --- */
+      footer {
+        background: var(--secondary);
+        padding: 3rem;
+        text-align: center;
+        border-top: 1px solid var(--border);
+        margin-top: 4rem;
+      }
+      footer p {
+        color: var(--text-secondary);
+      }
+
+      /* --- CHATBOT (Compact) --- */
+      .chatbot-toggle {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: var(--accent);
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+      }
+      .chatbot-toggle i {
+        color: white;
+        font-size: 1.5rem;
+      }
+
+      .chatbot-container {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 350px;
+        height: 500px;
+        background: var(--secondary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        display: none;
+        flex-direction: column;
+        z-index: 999;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+      .chatbot-container.active {
+        display: flex;
+      }
+      .chatbot-header {
+        background: var(--primary);
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 16px 16px 0 0;
+      }
+      .chatbot-messages {
+        flex: 1;
+        padding: 1rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      .message {
+        display: flex;
+        gap: 0.5rem;
+        max-width: 85%;
+      }
+      .message.user {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+      }
+      .message-content {
+        background: var(--border);
+        padding: 0.8rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+      .message.user .message-content {
+        background: var(--accent);
+        color: white;
+      }
+      .chatbot-input {
+        padding: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        border-top: 1px solid var(--border);
+      }
+      .chatbot-input input {
+        flex: 1;
+        padding: 0.8rem;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--primary);
+        color: white;
+      }
+      .chatbot-input button {
+        background: var(--accent);
+        border: none;
+        width: 40px;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .hero-content,
+        .about-grid {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+        nav ul {
+          display: none;
+        } 
+        .menu-toggle {
+          display: block;
+          position: absolute;
+          right: 2rem;
+          cursor: pointer;
+        }
+        .menu-toggle span {
+          display: block;
+          width: 25px;
+          height: 2px;
+          background: white;
+          margin: 5px 0;
+        }
+        nav ul.active {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background: var(--secondary);
+          padding: 1rem;
+        }
+      }
+
+      /* Style tambahan untuk status form */
+      #formStatus {
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border);
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fa-spinner {
+        margin-right: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="container">
+        <div class="logo">
+          KITA HOLO
+          <span
+            style="
+              font-weight: 300;
+              font-size: 0.8em;
+              color: var(--text-secondary);
+            "
+            >SOLUTIONS</span
+          >
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+          <span></span><span></span><span></span>
+        </div>
+        <ul id="navMenu">
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#team">Consultants</a></li>
+          <li>
+            <a
+              href="#contact"
+              class="btn btn-primary"
+              style="padding: 0.5rem 1rem; color: white"
+              >Audit Now</a
+            >
+          </li>
+          <li>
+            <button id="theme-toggle" class="theme-btn">
+              <i class="fas fa-moon"></i><i class="fas fa-sun"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <section id="home" class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-text reveal">
+          <p>
+            <i class="fas fa-check-circle" style="color: var(--accent)"></i>
+            Professional Code Optimization
+          </p>
+          <h1>
+            We Fix Your <span class="highlight">Broken & Slow</span> Code.
+          </h1>
+          <p>
+            Jangan biarkan website lambat atau bug merusak bisnis Anda. Kami
+            adalah tim konsultan IT yang berdedikasi untuk melakukan audit,
+            refactoring, dan optimasi performa aplikasi Anda.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap">
+            <a href="#contact" class="btn btn-primary">
+              Mulai Konsultasi <i class="fas fa-arrow-right"></i>
+            </a>
+            <a href="#services" class="btn btn-secondary"> Lihat Layanan </a>
+          </div>
+        </div>
+        <div class="reveal" style="display: flex; justify-content: center">
+          <div class="profile-img"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="clients-carousel" style="padding: 4rem 0; overflow: hidden">
+      <div class="section-header reveal" style="margin-bottom: 2rem">
+        <p class="section-tag">Trusted By Industry Leaders</p>
+      </div>
+
+      <div class="marquee-wrapper">
+        <div class="marquee-track scroll-left">
+          <div class="logo-group">
+            <div class="client-card">
+              <i class="fab fa-aws"></i> <span>AWS</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-google"></i> <span>Google Cloud</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-microsoft"></i> <span>Azure</span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-database"></i> <span>MongoDB</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-spotify"></i> <span>Spotify</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-airbnb"></i> <span>Airbnb</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-uber"></i> <span>Uber</span>
+            </div>
+          </div>
+          <div class="logo-group">
+            <div class="client-card">
+              <i class="fab fa-aws"></i> <span>AWS</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-google"></i> <span>Google Cloud</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-microsoft"></i> <span>Azure</span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-database"></i> <span>MongoDB</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-spotify"></i> <span>Spotify</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-airbnb"></i> <span>Airbnb</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-uber"></i> <span>Uber</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="marquee-wrapper">
+        <div class="marquee-track scroll-right">
+          <div class="logo-group">
+            <div class="client-card">
+              <i class="fab fa-meta"></i>
+              <span><a href="https://business.facebook.com/">Meta</a></span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-bolt"></i> <span>Vercel</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-docker"></i> <span>Docker</span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-server"></i> <span>Oracle</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-salesforce"></i> <span>Salesforce</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-paypal"></i> <span>PayPal</span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-cloud"></i> <span>IBM Cloud</span>
+            </div>
+          </div>
+          <div class="logo-group">
+            <div class="client-card">
+              <i class="fab fa-meta"></i> <span>Meta</span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-bolt"></i> <span>Vercel</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-docker"></i> <span>Docker</span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-server"></i> <span>Oracle</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-salesforce"></i> <span>Salesforce</span>
+            </div>
+            <div class="client-card">
+              <i class="fab fa-paypal"></i> <span>PayPal</span>
+            </div>
+            <div class="client-card">
+              <i class="fas fa-cloud"></i> <span>IBM Cloud</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="section-header reveal">
+        <div class="section-tag">Our Expertise</div>
+        <h2 class="section-title">Layanan Audit & Solusi</h2>
+        <p class="section-subtitle">
+          Kami tidak hanya membuat website, kami memastikan sistem Anda berjalan
+          dengan efisiensi maksimum.
+        </p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-icon"><i class="fas fa-tachometer-alt"></i></div>
+          <h3>Performance Tuning</h3>
+          <p>
+            Analisis mendalam untuk menemukan bottleneck yang membuat website
+            Anda lambat. Kami optimasi database, query, dan aset frontend.
+          </p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-icon"><i class="fas fa-bug"></i></div>
+          <h3>Code Review & Debugging</h3>
+          <p>
+            Punya bug yang sulit ditemukan? Tim kami akan membedah kode Anda
+            baris demi baris untuk memastikan kebersihan dan standar industri.
+          </p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>Security Audit</h3>
+          <p>
+            Identifikasi celah keamanan pada aplikasi web Anda sebelum
+            dieksploitasi oleh pihak yang tidak bertanggung jawab.
+          </p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-icon"><i class="fas fa-brain"></i></div>
+          <h3>AI Integration</h3>
+          <p>
+            Konsultasi penerapan Machine Learning untuk bisnis Anda. Dari data
+            processing hingga deployment model cerdas.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonials">
+      <div class="section-header reveal">
+        <div class="section-tag">Client Success</div>
+        <h2 class="section-title">Kata Klien Kami</h2>
+        <p class="section-subtitle">
+          Mereka yang telah mempercayakan optimasi sistemnya kepada Kita Holo.
+        </p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testi-card reveal">
+          <div class="testi-header">
+            <div class="testi-avatar"><i class="fas fa-user"></i></div>
+            <div class="testi-info">
+              <h4>PT. Mencari Cinta Sejati</h4>
+              <span>E-Commerce Startup</span>
+            </div>
+          </div>
+          <div class="testi-body">
+            <div class="stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i
+              ><i class="fas fa-star"></i><i class="fas fa-star"></i
+              ><i class="fas fa-star"></i>
+            </div>
+            <p>
+              "Website kami sering down saat flash sale. Setelah diaudit oleh
+              Tim Kita Holo, server load turun 40% dan transaksi lancar jaya!"
+            </p>
+          </div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="testi-header">
+            <div class="testi-avatar"><i class="fas fa-user-tie"></i></div>
+            <div class="testi-info">
+              <h4>CV. Maju Mundur Kena</h4>
+              <span>Logistics System</span>
+            </div>
+          </div>
+          <div class="testi-body">
+            <div class="stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i
+              ><i class="fas fa-star"></i><i class="fas fa-star"></i
+              ><i class="fas fa-star-half-alt"></i>
+            </div>
+            <p>
+              "Masalah bug pada tracking pengiriman akhirnya selesai berkat code
+              review dari Mas Fathur dan tim. Sangat profesional."
+            </p>
+          </div>
+        </div>
+        <div class="testi-card reveal">
+          <div class="testi-header">
+            <div class="testi-avatar"><i class="fas fa-building"></i></div>
+            <div class="testi-info">
+              <h4>EduTech Indonesia</h4>
+              <span>Learning Platform</span>
+            </div>
+          </div>
+          <div class="testi-body">
+            <div class="stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i
+              ><i class="fas fa-star"></i><i class="fas fa-star"></i
+              ><i class="fas fa-star"></i>
+            </div>
+            <p>
+              "Integrasi AI untuk rekomendasi belajar yang dikerjakan Mas Aufa
+              sangat akurat. User retention kami meningkat drastis."
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="section-header reveal">
+        <div class="section-tag">Investment</div>
+        <h2 class="section-title">Paket Audit & Optimasi</h2>
+        <p class="section-subtitle">
+          Pilih paket yang sesuai dengan skala aplikasi dan kebutuhan bisnis
+          Anda. Transparan, tanpa biaya tersembunyi.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <div class="price-header">
+            <h3>Code Audit</h3>
+            <div class="price-amount">Rp 1.5jt</div>
+            <span class="price-period">Per Project / One-time</span>
+          </div>
+          <ul class="features-list">
+            <li><i class="fas fa-check"></i> Automated Performance Scan</li>
+            <li>
+              <i class="fas fa-check"></i> Basic Security Check (Vulnerability)
+            </li>
+            <li><i class="fas fa-check"></i> Laporan PDF (Diagnosis Awal)</li>
+            <li><i class="fas fa-check"></i> 1 Jam Konsultasi Virtual</li>
+            <li class="disabled">
+              <i class="fas fa-times"></i> Manual Code Refactoring
+            </li>
+            <li class="disabled">
+              <i class="fas fa-times"></i> Database Optimization
+            </li>
+          </ul>
+          <a
+            href="#contact"
+            class="btn btn-secondary"
+            onclick="document.getElementById('message').value='Saya tertarik dengan paket Code Audit (Starter)...'"
+            >Pilih Starter</a
+          >
+        </div>
+
+        <div class="pricing-card popular reveal">
+          <div class="badge-popular">Best Value</div>
+          <div class="price-header">
+            <h3>Full Optimization</h3>
+            <div class="price-amount">Rp 7.5jt</div>
+            <span class="price-period">Mulai dari / Project</span>
+          </div>
+          <ul class="features-list">
+            <li>
+              <i class="fas fa-check"></i>
+              <strong>Deep Manual Code Review</strong>
+            </li>
+            <li><i class="fas fa-check"></i> Database Query Optimization</li>
+            <li><i class="fas fa-check"></i> Security Hardening & Patching</li>
+            <li>
+              <i class="fas fa-check"></i> Perbaikan Bug (Hingga 5 Isu Kritis)
+            </li>
+            <li><i class="fas fa-check"></i> Laporan Teknis & Dokumentasi</li>
+            <li><i class="fas fa-check"></i> 1 Bulan Support Monitoring</li>
+          </ul>
+          <a
+            href="#contact"
+            class="btn btn-primary"
+            onclick="document.getElementById('message').value='Saya tertarik dengan paket Full Optimization...'"
+            >Optimasi Sekarang</a
+          >
+        </div>
+
+        <div class="pricing-card reveal">
+          <div class="price-header">
+            <h3>Enterprise</h3>
+            <div class="price-amount">Custom</div>
+            <span class="price-period">Sesuai Kebutuhan</span>
+          </div>
+          <ul class="features-list">
+            <li><i class="fas fa-check"></i> System Architecture Redesign</li>
+            <li>
+              <i class="fas fa-check"></i> AI Model Integration & Training
+            </li>
+            <li><i class="fas fa-check"></i> Load Balancing & Scalability</li>
+            <li><i class="fas fa-check"></i> Dedicated DevOps Team</li>
+            <li><i class="fas fa-check"></i> Unlimited Bug Fixes (Retainer)</li>
+            <li><i class="fas fa-check"></i> Prioritas Support 24/7</li>
+          </ul>
+          <a
+            href="#contact"
+            class="btn btn-secondary"
+            onclick="document.getElementById('message').value='Saya butuh solusi Enterprise Custom...'"
+            >Hubungi Sales</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section id="team">
+      <div class="section-header reveal">
+        <div class="section-tag">The Experts</div>
+        <h2 class="section-title">Senior Consultants</h2>
+        <p class="section-subtitle">
+          Klik pada profil untuk melihat spesialisasi teknis kami.
+        </p>
+      </div>
+
+      <div class="portfolio-grid">
+        <div class="portfolio-card reveal">
+          <div class="portfolio-card-inner">
+            <div class="portfolio-card-front">
+              <div class="p-card-header">
+                <img src="/assets/foto_gue.jpg" alt="Fathur" />
+              </div>
+              <div class="p-card-body">
+                <h3>Fathur Rahman</h3>
+                <p class="role">Lead Architect & Backend</p>
+                <p class="p-about-text">
+                  "Spesialis dalam arsitektur sistem skala besar dan optimasi
+                  backend logic. Fokus pada efisiensi dan keamanan data."
+                </p>
+                <div class="flip-trigger">
+                  <span><i class="fas fa-search"></i> View Tech Stack</span>
+                </div>
+              </div>
+            </div>
+            <div class="portfolio-card-back">
+              <div class="back-content">
+                <h3>Technical Audit</h3>
+                <div class="stat-row">
+                  <span class="stat-label">Core Language</span
+                  ><span class="stat-value">Python, PHP</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Framework</span
+                  ><span class="stat-value">Laravel, Django</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Specialty</span
+                  ><span class="stat-value">System Design</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Experience</span
+                  ><span class="stat-value">Fullstack Optimize</span>
+                </div>
+                <div class="flip-back-btn">
+                  <i class="fas fa-undo"></i> Kembali
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="portfolio-card reveal">
+          <div class="portfolio-card-inner">
+            <div class="portfolio-card-front">
+              <div class="p-card-header">
+                <img src="/assets/gusti.jpg" alt="Gusti" />
+              </div>
+              <div class="p-card-body">
+                <h3>Gusti Alifiraqsha</h3>
+                <p class="role">Frontend & Network Specialist</p>
+                <p class="p-about-text">
+                  "Memastikan antarmuka pengguna responsif, cepat, dan jaringan
+                  infrastruktur yang stabil untuk aplikasi Anda."
+                </p>
+                <div class="flip-trigger">
+                  <span><i class="fas fa-search"></i> View Tech Stack</span>
+                </div>
+              </div>
+            </div>
+            <div class="portfolio-card-back">
+              <div class="back-content">
+                <h3>Frontend Audit</h3>
+                <div class="stat-row">
+                  <span class="stat-label">Core Language</span
+                  ><span class="stat-value">JS, HTML/CSS</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Networking</span
+                  ><span class="stat-value">Cisco, Mikrotik</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Optimization</span
+                  ><span class="stat-value">Core Web Vitals</span>
+                </div>
+                <div class="flip-back-btn">
+                  <i class="fas fa-undo"></i> Kembali
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="portfolio-card reveal">
+          <div class="portfolio-card-inner">
+            <div class="portfolio-card-front">
+              <div class="p-card-header">
+                <img src="/assets/mraufa.png" alt="Aufa" />
+              </div>
+              <div class="p-card-body">
+                <h3>M. Aufa Hakim</h3>
+                <p class="role">AI & Data Consultant</p>
+                <p class="p-about-text">
+                  "Membantu bisnis mengimplementasikan kecerdasan buatan untuk
+                  analisis data dan automasi keputusan."
+                </p>
+                <div class="flip-trigger">
+                  <span><i class="fas fa-search"></i> View Tech Stack</span>
+                </div>
+              </div>
+            </div>
+            <div class="portfolio-card-back">
+              <div class="back-content">
+                <h3>AI Solutions</h3>
+                <div class="stat-row">
+                  <span class="stat-label">Algorithm</span
+                  ><span class="stat-value">TensorFlow, PyTorch</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Data</span
+                  ><span class="stat-value">Pandas, NumPy</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Focus</span
+                  ><span class="stat-value">Predictive Model</span>
+                </div>
+                <div class="flip-back-btn">
+                  <i class="fas fa-undo"></i> Kembali
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-header reveal">
+        <div class="section-tag">Audit Request</div>
+        <h2 class="section-title">Konsultasikan Proyek Anda</h2>
+        <p class="section-subtitle">
+          Isi formulir di bawah ini. Sertakan link website/repository Anda jika
+          Anda ingin kami melakukan pengecekan awal.
+        </p>
+      </div>
+      <div class="contact-container">
+        <form
+          id="contactForm"
+          action="https://formspree.io/f/MASUKKAN_ID_FORMSPREE_DISINI"
+          method="POST"
+          class="contact-form reveal"
+        >
+          <div class="form-group">
+            <label for="name">Nama / Perusahaan</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              placeholder="PT. Solusi Digital..."
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Bisnis</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="hrd@company.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="url">Website / Repo URL (Opsional)</label>
+            <input
+              type="url"
+              id="url"
+              name="url"
+              placeholder="https://github.com/username/project"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="message">Deskripsi Masalah</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              required
+              placeholder="Contoh: Website kami loadingnya 10 detik..."
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            id="submitBtn"
+            class="btn btn-primary"
+            style="width: 100%"
+          >
+            <span
+              >Kirim Permintaan Audit <i class="fas fa-paper-plane"></i
+            ></span>
+          </button>
+
+          <p
+            id="formStatus"
+            style="
+              margin-top: 1rem;
+              text-align: center;
+              display: none;
+              font-size: 0.9rem;
+            "
+          ></p>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 Kita Holo Solutions. Enterprise Software Consulting.</p>
+    </footer>
+
+    <button class="chatbot-toggle" id="chatbotToggle">
+      <i class="fas fa-comment-dots"></i>
+    </button>
+    <div class="chatbot-container" id="chatbotContainer">
+      <div class="chatbot-header">
+        <h3 style="color: var(--text-primary)">
+          <i class="fas fa-robot"></i> Holo Assistant
+        </h3>
+        <button
+          id="chatbotClose"
+          style="
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+          "
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="chatbot-messages" id="chatbotMessages">
+        <div class="message">
+          <div class="message-content">
+            Halo! Saya asisten konsultan Kita Holo. Ingin audit performa website
+            atau konsultasi AI?
+          </div>
+        </div>
+      </div>
+      <div class="chatbot-input">
+        <input
+          type="text"
+          id="userInput"
+          placeholder="Tanya tentang layanan..."
+        />
+        <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+
+    <script>
+      // --- UI LOGIC ---
+      window.toggleMenu = function () {
+        document.getElementById("navMenu").classList.toggle("active");
+      };
+
+      // Scroll Reveal
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("active");
+          });
+        },
+        { threshold: 0.1 }
+      );
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      // Flip Card Logic
+      document.querySelectorAll(".flip-trigger").forEach((btn) => {
+        btn.addEventListener("click", (e) =>
+          e.target.closest(".portfolio-card").classList.add("is-flipped")
+        );
+      });
+      document.querySelectorAll(".flip-back-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) =>
+          e.target.closest(".portfolio-card").classList.remove("is-flipped")
+        );
+      });
+
+      // Theme Toggle
+      const themeToggle = document.getElementById("theme-toggle");
+      themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("light-theme");
+      });
+
+      // --- CHATBOT LOGIC (SECURE MODE) ---
+      // Logika ini menghubungi Vercel Backend, bukan Google langsung.
+      
+      const chatbotToggle = document.getElementById("chatbotToggle");
+      const chatbotContainer = document.getElementById("chatbotContainer");
+      const chatbotClose = document.getElementById("chatbotClose");
+      const sendBtn = document.getElementById("sendBtn");
+      const userInput = document.getElementById("userInput");
+      const messages = document.getElementById("chatbotMessages");
+
+      function toggleChat() {
+        chatbotContainer.classList.toggle("active");
+      }
+      chatbotToggle.addEventListener("click", toggleChat);
+      chatbotClose.addEventListener("click", toggleChat);
+
+      function addMsg(text, isUser = false) {
+        const div = document.createElement("div");
+        div.className = `message ${isUser ? "user" : ""}`;
+        div.innerHTML = `<div class="message-content">${text}</div>`;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      async function handleChat() {
+        const text = userInput.value.trim();
+        if (!text) return;
+        
+        // 1. Tampilkan pesan user
+        addMsg(text, true);
+        userInput.value = "";
+        
+        // 2. Tampilkan indikator loading
+        const loadingDiv = document.createElement("div");
+        loadingDiv.className = "message";
+        loadingDiv.innerHTML = `<div class="message-content"><i class="fas fa-spinner fa-spin"></i> Mengetik...</div>`;
+        messages.appendChild(loadingDiv);
+        messages.scrollTop = messages.scrollHeight;
+
+        try {
+          // 3. Panggil API Backend Vercel kita (/api/chat)
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+          });
+
+          const data = await response.json();
+          
+          // Hapus loading
+          loadingDiv.remove();
+
+          if (response.ok) {
+            addMsg(data.reply);
+          } else {
+            console.error("Backend Error:", data.error);
+            addMsg("Maaf, sistem sedang sibuk. Mohon coba lagi nanti.");
+          }
+        } catch (e) {
+          loadingDiv.remove();
+          console.error("Network Error:", e);
+          addMsg("Gagal terhubung ke server. Periksa koneksi internet Anda.");
+        }
+      }
+
+      sendBtn.addEventListener("click", handleChat);
+      userInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") handleChat();
+      });
+
+      // Service Card 3D Tilt Effect
+      document.querySelectorAll(".service-card").forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const xMid = rect.width / 2;
+          const yMid = rect.height / 2;
+          const xRotate = ((y - yMid) / yMid) * -10; 
+          const yRotate = ((x - xMid) / xMid) * 10;
+
+          card.style.transform = `perspective(1000px) rotateX(${xRotate}deg) rotateY(${yRotate}deg) scale(1.02)`;
+        });
+
+        card.addEventListener("mouseleave", () => {
+          card.style.transform =
+            "perspective(1000px) rotateX(0) rotateY(0) scale(1)";
+        });
+      });
+
+      // --- CONTACT FORM LOGIC (FORMSPREE) ---
+      const form = document.getElementById("contactForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const formStatus = document.getElementById("formStatus");
+      const btnOriginalText = submitBtn.innerHTML;
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault(); 
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+        formStatus.style.display = "none";
+
+        const data = new FormData(event.target);
+
+        try {
+          const response = await fetch(event.target.action, {
+            method: form.method,
+            body: data,
+            headers: {
+              Accept: "application/json",
+            },
+          });
+
+          if (response.ok) {
+            formStatus.style.display = "block";
+            formStatus.style.color = "#4ade80"; 
+            formStatus.innerHTML =
+              '<i class="fas fa-check-circle"></i> Pesan terkirim! Tim kami akan segera menghubungi Anda.';
+            form.reset(); 
+
+            setTimeout(() => {
+              submitBtn.innerHTML = "Terkirim!";
+              submitBtn.style.background = "#22c55e";
+            }, 500);
+
+            setTimeout(() => {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = btnOriginalText;
+              submitBtn.style.background = ""; 
+              formStatus.style.display = "none";
+            }, 5000);
+          } else {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Terjadi kesalahan.");
+          }
+        } catch (error) {
+          formStatus.style.display = "block";
+          formStatus.style.color = "#ef4444"; 
+          formStatus.innerHTML =
+            '<i class="fas fa-exclamation-circle"></i> Gagal mengirim pesan. Silakan coba lagi.';
+
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = btnOriginalText;
+        }
+      });
+    </script>
+  </body>
+</html>
