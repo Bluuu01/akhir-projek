@@ -207,7 +207,7 @@
       body.light-theme .theme-btn .fa-sun { display: inline-block; }
       body.light-theme .theme-btn .fa-moon { display: none; }
 
-      /* --- HERO SECTION --- */
+      /* --- HERO SECTION UPDATED --- */
       .hero {
         min-height: 100vh;
         display: flex;
@@ -217,48 +217,81 @@
         overflow: hidden;
         padding: 0 2rem;
       }
-      .hero-bg {
+
+      /* Container untuk Slideshow Background */
+      .hero-slideshow {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: radial-gradient(
-          circle at 50% 50%,
-          rgba(56, 189, 248, 0.15) 0%,
-          rgba(15, 23, 42, 0) 70%
-        );
-        animation: pulse-soft 8s infinite alternate; 
+        z-index: -2;
       }
-      .hero-content {
-        max-width: 1400px;
+
+      .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
-        align-items: center;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0; /* Default tidak terlihat */
+        transform: scale(1.1); /* Sedikit zoom effect */
+        transition: opacity 2s ease-in-out, transform 10s ease; /* Animasi smooth 2 detik */
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: scale(1); /* Kembali ke ukuran normal saat aktif */
+      }
+
+      /* Overlay Gelap agar teks tetap terbaca di atas foto */
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.75); /* Warna biru gelap transparan */
+        z-index: -1;
+      }
+
+      .hero-content {
+        max-width: 900px; /* Batasi lebar agar baris teks enak dibaca */
+        width: 100%;
+        display: flex;       /* Ubah dari Grid ke Flex */
+        flex-direction: column;
+        align-items: center; /* Tengahkan secara horizontal */
+        text-align: center;  /* Tengahkan teks */
         z-index: 1;
       }
+
+      /* Penyesuaian ukuran font untuk tampilan tengah */
       .hero-text h1 {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-size: clamp(3rem, 6vw, 5rem);
         font-weight: 800;
         line-height: 1.1;
         margin-bottom: 1.5rem;
         letter-spacing: -1px;
       }
-      .hero-text .highlight {
-        background: linear-gradient(90deg, var(--accent), var(--accent-light), #fff, var(--accent));
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradient-move 4s linear infinite;
-      }
+
       .hero-text p {
-        font-size: 1.2rem;
-        color: var(--text-secondary);
+        font-size: 1.3rem;
+        color: #e2e8f0; /* Text lebih terang karena background gelap */
         margin-bottom: 2.5rem;
         line-height: 1.6;
-        max-width: 90%;
+        max-width: 80%; /* Agar teks deskripsi tidak terlalu lebar */
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Tombol di tengah */
+      .hero-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
       }
       
       /* Button Styles Enhanced */
@@ -314,7 +347,7 @@
         width: 350px;
         height: 350px;
         border-radius: 24px;
-        background-image: url("/assets/holo.jpeg");
+        background-image: url("/assets/page1_gambar.png");
         background-size: cover;
         background-position: center;
         box-shadow: 20px 20px 0px var(--border);
@@ -1102,28 +1135,32 @@
     </nav>
 
     <section id="home" class="hero">
-      <div class="hero-bg"></div>
+      <div class="hero-slideshow">
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=2069&auto=format&fit=crop');"></div>
+        <div class="slide" style="background-image: url('https://unsplash.com/photos/people-sitting-on-chair-in-front-of-computer-monitor-Fa9b57hffnM');"></div>
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop');"></div>
+      </div>
+
+      <div class="hero-overlay"></div>
+
       <div class="hero-content">
         <div class="hero-text reveal">
-          <p>
-            <i class="fas fa-check-circle" style="color: var(--accent)"></i>
+          <p style="color: var(--accent-light); font-weight: 600; letter-spacing: 1px;">
+            <i class="fas fa-check-circle"></i>
             Professional Code Optimization
           </p>
           <h1>We Fix Your <span class="highlight">Broken & Slow</span> Code.</h1>
           <p>
             Don't let a slow website or bugs ruin your business. We are a dedicated IT consulting team for auditing, refactoring, and optimizing your application performance.
           </p>
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-start;">
+          <div class="hero-buttons">
             <a href="#contact" class="btn btn-primary">
               Start Consultation <i class="fas fa-arrow-right"></i>
             </a>
-            <a href="#services" class="btn btn-secondary"> View Services </a>
+            <a href="#services" class="btn btn-secondary" style="border-color: rgba(255,255,255,0.3); color: white;"> View Services </a>
           </div>
         </div>
-        <div class="reveal" style="display: flex; justify-content: center">
-          <div class="profile-img"></div>
         </div>
-      </div>
     </section>
 
     <section id="clients-carousel" style="padding: 4rem 0; overflow: hidden">
@@ -1770,7 +1807,7 @@
         document.body.classList.toggle("light-theme");
       });
 
-      // --- CHATBOT LOGIC WITH MODERATION ---
+      /* --- CHATBOT LOGIC IMPROVED --- */
       const chatbotToggle = document.getElementById("chatbotToggle");
       const chatbotContainer = document.getElementById("chatbotContainer");
       const chatbotClose = document.getElementById("chatbotClose");
@@ -1778,7 +1815,7 @@
       const userInput = document.getElementById("userInput");
       const messages = document.getElementById("chatbotMessages");
 
-      // 1. FILTER CONFIGURATION
+      // 1. FILTER CONFIGURATION (Blacklist)
       const sensitiveKeywords = [
           "perang", "bunuh", "bom", "teroris", "nuklir", "war", "kill", "bomb", "weapon",
           "politik", "presiden", "partai", "pemilu", "kampanye", "politics", "president", "election",
@@ -1792,25 +1829,95 @@
           "pacar", "gaji", "nikah", "agama", "salary", "girlfriend", "boyfriend", "married"
       ];
 
-      // 2. VALIDATION FUNCTION
+      // 2. HELPER: Clean Markdown (**bold**)
+      function cleanText(text) {
+          // Menghapus tanda bintang ganda (**)
+          return text.replace(/\*\*/g, '');
+      }
+
+      // 3. LOGIC UTAMA: Menentukan Jawaban
+      function getSmartReply(input) {
+          const lower = input.toLowerCase();
+
+          // Kategori A: Konsultasi / Pembuatan Website (Poin-poin)
+          if (
+              lower.includes("buat website") || 
+              lower.includes("bikin web") || 
+              lower.includes("konsultasi") || 
+              lower.includes("harga") ||
+              lower.includes("jasa") ||
+              lower.includes("audit")
+          ) {
+              return `
+                  Wah, ide bagus! Untuk konsultasi atau pembuatan website, berikut alurnya:
+                  <ul style="margin-left: 20px; margin-top: 10px; margin-bottom: 10px;">
+                      <li>Analisis kebutuhan bisnis Anda.</li>
+                      <li>Estimasi fitur dan teknologi yang cocok.</li>
+                      <li>Penawaran harga transparan.</li>
+                      <li>Proses pengerjaan & testing.</li>
+                  </ul>
+                  Boleh tahu jenis website apa yang ingin Anda buat? (Toko Online, Profil Perusahaan, dll?)
+              `;
+          }
+
+          // Kategori B: Masalah Kompleks / Teknis Berat (Email Referal)
+          if (
+              lower.includes("error") || 
+              lower.includes("bug") || 
+              lower.includes("database") || 
+              lower.includes("server") || 
+              lower.includes("api") ||
+              lower.includes("lemot") ||
+              lower.includes("lambat") ||
+              lower.includes("security")
+          ) {
+              return `
+                  Waduh, kedengarannya itu masalah teknis yang cukup kompleks dan butuh penanganan khusus. 
+                  <br><br>
+                  Saran saya, lebih baik diskusikan langsung detail teknisnya dengan tim konsultan ahli kami agar solusinya akurat:
+                  <br><br>
+                  📧 <b>Lead Consultant (Fathur):</b> <a href="mailto:frahman4285644@gmail.com" style="color: var(--accent);">frahman4285644@gmail.com</a>
+                  <br>
+                  Atau untuk urusan AI & Data bisa ke <b>Aufa</b>, dan Jaringan ke <b>Gusti</b>.
+              `;
+          }
+
+          // Kategori C: Obrolan Santai / Sapaan (Sopan & Santai)
+          const greetings = ["halo", "hi", "hai", "pagi", "siang", "malam", "assalamualaikum"];
+          if (greetings.some(word => lower.includes(word))) {
+              return "Halo juga! Selamat datang di Kita Holo. Santai saja ya, ada yang bisa saya bantu hari ini?";
+          }
+
+          if (lower.includes("siapa kamu") || lower.includes("bot")) {
+              return "Saya asisten virtual Kita Holo. Saya di sini buat bantu jawab pertanyaan dasar kamu. Kalau yang berat-berat, nanti saya panggilkan bos-bos saya hehe.";
+          }
+
+          if (lower.includes("terima kasih") || lower.includes("makasih") || lower.includes("thanks")) {
+              return "Sama-sama! Senang bisa membantu. Jangan ragu tanya lagi ya.";
+          }
+
+          // Default Answer
+          return "Maaf, saya kurang paham maksudnya. Bisa diperjelas? Atau kalau mau konsultasi proyek, langsung klik tombol 'Consult Now' di atas ya!";
+      }
+
+      // 4. VALIDATION FUNCTION
       function validateMessage(text) {
           const lowerText = text.toLowerCase();
-
           const foundSensitive = sensitiveKeywords.find(word => lowerText.includes(word));
-          if (foundSensitive) {
-              return "I'm sorry, I cannot discuss sensitive, political, or illegal topics as per our guidelines.";
-          }
-
+          if (foundSensitive) return "Waduh, maaf ya. Saya tidak bisa membahas topik sensitif, politik, atau ilegal sesuai panduan kami.";
+          
           const foundPrivacy = privacyKeywords.find(word => lowerText.includes(word));
-          if (foundPrivacy) {
-              return "I'm sorry, I cannot share personal private information (address, contact, etc.) about our team.";
-          }
-
+          if (foundPrivacy) return "Maaf, saya tidak bisa membagikan informasi privasi (alamat, kontak pribadi, dll) tim kami di sini.";
+          
           return null;
       }
 
+      // 5. UI CONTROLS
       function toggleChat() {
         chatbotContainer.classList.toggle("active");
+        if (chatbotContainer.classList.contains("active")) {
+            userInput.focus();
+        }
       }
       chatbotToggle.addEventListener("click", toggleChat);
       chatbotClose.addEventListener("click", toggleChat);
@@ -1818,20 +1925,26 @@
       function addMsg(text, isUser = false) {
         const div = document.createElement("div");
         div.className = `message ${isUser ? "user" : ""}`;
-        div.innerHTML = `<div class="message-content">${text}</div>`;
+        // Bersihkan tanda ** jika itu pesan dari bot
+        const cleanContent = isUser ? text : cleanText(text);
+        div.innerHTML = `<div class="message-content">${cleanContent}</div>`;
         messages.appendChild(div);
         messages.scrollTop = messages.scrollHeight;
       }
 
+      // 6. MAIN HANDLER
       async function handleChat() {
         const text = userInput.value.trim();
         if (!text) return;
         
+        // Tampilkan pesan user
         addMsg(text, true);
         userInput.value = "";
         
+        // Cek Validasi Kata Terlarang
         const validationError = validateMessage(text);
         if (validationError) {
+            // Loading sebentar biar kerasa natural
             const loadingDiv = document.createElement("div");
             loadingDiv.className = "message";
             loadingDiv.innerHTML = `<div class="message-content"><i class="fas fa-spinner fa-spin"></i> Typing...</div>`;
@@ -1841,60 +1954,34 @@
             setTimeout(() => {
                 loadingDiv.remove();
                 addMsg(validationError);
-            }, 600); 
+            }, 800); 
             return; 
         }
 
+        // Efek Typing (Loading)
         const loadingDiv = document.createElement("div");
         loadingDiv.className = "message";
         loadingDiv.innerHTML = `<div class="message-content"><i class="fas fa-spinner fa-spin"></i> Typing...</div>`;
         messages.appendChild(loadingDiv);
         messages.scrollTop = messages.scrollHeight;
 
-        try {
-          const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text })
-          });
+        // Simulasi Mikir (Delay 1 detik)
+        setTimeout(() => {
+            loadingDiv.remove();
+            
+            // --- LOGIKA MENGGANTIKAN FETCH API ---
+            // Kita panggil fungsi pintar kita di sini
+            const reply = getSmartReply(text);
+            
+            addMsg(reply);
+            // -------------------------------------
 
-          const data = await response.json();
-          loadingDiv.remove();
-
-          if (response.ok) {
-            addMsg(data.reply);
-          } else {
-            console.error("Backend Error:", data.error);
-            addMsg("Sorry, the system is busy. Please try again later.");
-          }
-        } catch (e) {
-          loadingDiv.remove();
-          console.error("Network Error:", e);
-          addMsg("Failed to connect to server. Check your internet connection.");
-        }
+        }, 1000);
       }
 
       sendBtn.addEventListener("click", handleChat);
       userInput.addEventListener("keypress", (e) => {
         if (e.key === "Enter") handleChat();
-      });
-
-      // Service Card 3D Tilt Effect
-      document.querySelectorAll(".service-card").forEach((card) => {
-        card.addEventListener("mousemove", (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const xMid = rect.width / 2;
-          const yMid = rect.height / 2;
-          const xRotate = ((y - yMid) / yMid) * -10; 
-          const yRotate = ((x - xMid) / xMid) * 10;
-          card.style.transform = `perspective(1000px) rotateX(${xRotate}deg) rotateY(${yRotate}deg) scale(1.02)`;
-        });
-
-        card.addEventListener("mouseleave", () => {
-          card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale(1)";
-        });
       });
 
       // --- CONTACT FORM LOGIC ---
@@ -1936,6 +2023,19 @@
           submitBtn.innerHTML = btnOriginalText;
         }
       });
+
+      // --- HERO BACKGROUND SLIDESHOW ---
+      const slides = document.querySelectorAll('.slide');
+      let currentSlide = 0;
+      const slideInterval = 4000; // Ganti gambar setiap 5000ms (5 detik)
+
+      function nextSlide() {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+      }
+
+      setInterval(nextSlide, slideInterval);
     </script>
   </body>
 </html>
